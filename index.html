@@ -1,0 +1,670 @@
+<!DOCTYPE html><html><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+  <meta charset="utf-8">
+  <meta name="description" content="CUDA-L1 leverages contrastive reinforcement learning to automatically optimize CUDA kernels, achieving up to 449x speedup. Official website of 'CUDA-L1: Improving CUDA Optimization via Contrastive Reinforcement Learning'">
+  <meta name="keywords" content="CUDA-L1, CUDA Optimization, Reinforcement Learning, GPU Programming">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>CUDA-L1: Improving CUDA Optimization via Contrastive Reinforcement Learning</title>
+
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <script src="https://unpkg.com/interactjs/dist/interact.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" type="text/css" href="./static/slick/slick.css">
+  <link rel="stylesheet" type="text/css" href="./static/slick/slick-theme.css">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script defer="" src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <style>
+    .highlight-box {
+      background-color: #e8f4f8;
+      border-left: 4px solid #0066cc;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 0 5px 5px 0;
+    }
+
+    .result-card {
+      background-color: #f5f5f5;
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px solid #ddd;
+      margin-bottom: 1rem;
+    }
+
+    .result-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #0066cc;
+    }
+
+    .result-label {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    .logo-img {
+      height: 40px;
+      width: auto;
+    }
+
+    /* Title gradient effect */
+    .gradient-title {
+      background: linear-gradient(135deg, #0066cc 0%, #00a6ff 50%, #0066cc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Subsection title styling with left border and background */
+    .subsection-title {
+      background-color: #f5f5f5;
+      border-left: 4px solid #0066cc;
+      padding: 0.75rem 1.5rem;
+      margin: 2rem 0 1rem 0;
+      border-radius: 0 5px 5px 0;
+    }
+
+    /* Image styling */
+    .figure-container {
+      text-align: center;
+      margin: 1rem 0;
+    }
+
+    .figure-container img {
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+      border-radius: 2px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://deep-reinforce.com">
+        <img src="assets/header.png" alt="DeepReinforce" class="logo-img">
+      </a>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <!-- Home button removed -->
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container">
+
+        <div class="container has-text-centered" style="margin-bottom: 0rem;">
+
+          <h1 class="title is-1 publication-title gradient-title" style="margin-top: -1rem;">
+            CUDA-L1: Improving CUDA Optimization via Contrastive Reinforcement Learning
+          </h1>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">DeepReinforce Team</span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">July 21, 2025</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- arXiv Link -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/xxxx.xxxxx" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+
+              <!-- GitHub Link -->
+              <span class="link-block">
+                <a href="https://github.com/deepreinforce-ai/CUDA-L1" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                </a>
+              </span>
+
+              <!-- Demo Link -->
+              <span class="link-block">
+                <a href="https://deep-reinforce.com/" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="fa fa-play"></i>
+                  </span>
+                  <span>Demo</span>
+                </a>
+              </span>
+
+              <!-- Speedup Image -->
+            <div class="figure-container" style="padding-top: 0rem; margin-top: 2rem; margin-bottom: -2rem;">
+              <img src="assets/general_result.png" alt="CUDA-L1 Speedup Results" style="transform: scale(0.9); transform-origin: center top;">
+              <caption>Average speedup achieved by CUDA-L1 across different architectures on KernelBench.</caption>
+            </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section", style="padding-top: 0rem;">
+    <div class="container is-max-desktop">
+
+      <!-- Introduction -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Introduction</h2>
+
+          <div class="content has-text-left">
+            <h4 class="title is-5 subsection-title">The GPU Crisis and How AI Might Save Us</h4>
+            <p>
+              Let's face it - we're in the middle of a GPU shortage crisis. Everyone wants GPUs for their AI projects. The demand is through the roof, and prices are absolutely insane - a single H100 can cost over $30,000, and good luck even finding one in stock.
+            </p>
+            <p>
+              For most companies and researchers, buying more GPUs simply isn't an option. The only realistic solution? We need to squeeze every bit of performance from the GPUs we already have.
+            </p>
+
+            <h4 class="title is-5 subsection-title">The Old Way: Manual CUDA Optimization Hell</h4>
+            <p>
+              If you've ever tried optimizing CUDA code, you know the pain. It's like solving a massive puzzle where you're constantly tweaking memory access patterns, adjusting thread blocks, and running endless profiling tests. Engineers spend weeks or months on this stuff, and it's honestly exhausting.
+            </p>
+
+            <h4 class="title is-5 subsection-title">Enter AI: What if LLMs Could Do This For Us?</h4>
+            <p>
+              Here's where things get interesting. Recent LLM models - think DeepSeek-R1 and OpenAI's o1 - are getting pretty good at writing code. And here's the kicker: CUDA optimization has a super clear reward signal - speed! Your code either runs faster or it doesn't. That's perfect for training RL.
+            </p>
+            <p>
+              Imagine this: instead of you pulling your hair out trying different optimizations, an AI could generate thousands of variations, test them all, and learn what works. It might even discover tricks that humans never thought of!
+            </p>
+
+            <h4 class="title is-5 subsection-title">Introducing CUDA-L1</h4>
+            <p>
+              So we built CUDA-L1, which uses something we call "contrastive reinforcement learning." Think of it like this: instead of just trying random stuff, our AI compares different CUDA versions side-by-side and learns why some are faster than others. It's like having a coach that shows you good vs. bad examples until you get it.
+            </p>
+
+            <!-- The Results Are Mind-Blowing section moved here -->
+            <div class="highlight-box">
+              <h3 class="title is-4 has-text-centered">The Results Are Mind-Blowing</h3>
+              <div class="columns is-multiline">
+                <div class="column is-half">
+                  <div class="result-card">
+                    <div class="result-number">17.7×</div>
+                    <div class="result-label">Average speedup across 250 benchmarks</div>
+                  </div>
+                </div>
+                <div class="column is-half">
+                  <div class="result-card">
+                    <div class="result-number">449×</div>
+                    <div class="result-label">Best case speedup (not a typo!)</div>
+                  </div>
+                </div>
+              </div>
+              <p class="has-text-centered" style="margin-top: 1rem;">
+                <table class="table is-striped is-fullwidth">
+                  <caption>CUDA-L1 Works great on different GPUs too:</caption>
+                  <div> </div>
+                  <thead>
+                    <tr>
+                      <th>GPU Model</th>
+                      <th>Average Speedup</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>H100</td>
+                      <td>17.8×</td>
+                    </tr>
+                    <tr>
+                      <td>RTX 3090</td>
+                      <td>19.0×</td>
+                    </tr>
+                    <tr>
+                      <td>L40</td>
+                      <td>16.5×</td>
+                    </tr>
+                    <tr>
+                      <td>H800</td>
+                      <td>14.7×</td>
+                    </tr>
+                    <tr>
+                      <td>H20</td>
+                      <td>13.9×</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              </p>
+            </div>
+
+            <h4 class="title is-5 subsection-title">What Makes This Special?</h4>
+            <p>Here's what blew our minds about what CUDA-L1 learned on its own:</p>
+            <ul style="text-align: left;">
+              <li>• It discovered optimization techniques by itself - stuff like memory coalescing, loop unrolling, operation fusion. Some of these are well-known, others are rarely used.</li>
+              <li>• It figures out the perfect combo - like a chef who knows exactly which spices work together, it combines optimizations in ways that maximize performance.</li>
+              <li>• It learned the "rules" of CUDA - like how some optimizations multiply each other's effects, or how you need to apply certain "gatekeeper" techniques first before others will work.</li>
+              <li>• It spots hidden problems - sometimes it rejects optimizations that look good on paper but actually slow things down due to sneaky issues like CPU-GPU sync overhead.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!--/ Introduction -->
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+
+      <!-- How CUDA-L1 Works -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">How CUDA-L1 Works</h2>
+
+          <div class="content has-text-left">
+            <h4 class="title is-5 subsection-title">The Problem: Why Can't Current LLMs Write Good CUDA?</h4>
+            <p>
+              Ask any AI to write CUDA code and you'll likely get something that doesn't compile, crashes, or runs painfully slow. The reason is simple: these models barely saw any quality CUDA code during training. It's like asking someone who's only read cooking blogs to become a chef.
+            </p>
+
+            <h4 class="title is-5 subsection-title">Enter CUDA-L1: A Three-Step Recipe for Success</h4>
+            <p>
+              We built CUDA-L1 with a three-stage pipeline: supervised learning (learn the basics), self-supervised learning (practice until perfect), and contrastive reinforcement learning (compete for speed).
+            </p>
+
+            <!-- Pipeline Image -->
+            <div class="figure-container" style="padding-top: 0rem; margin-top: 1rem; margin-bottom: -2rem;">
+              <img src="assets/pipeline.png" alt="CUDA-L1 Pipeline", style="transform: scale(0.98); transform-origin: center top;">
+            </div>
+
+            <h5 class="title is-6 subsection-title">Stage 1: Learning the Basics with Data Augmentation</h5>
+            <p>
+              First, we needed to fix the data shortage problem. We took existing CUDA code and created variations of it - expanding the model's exposure to different CUDA patterns. This supervised fine-tuning phase has one goal: make sure the AI can write CUDA code that actually compiles and runs correctly.
+            </p>
+
+            <h5 class="title is-6 subsection-title">Stage 2: Practice Makes Perfect with Self-Supervised Learning</h5>
+            <p>
+              Next, we let the model generate its own CUDA code, test it, and learn from what works. The model generates thousands of code samples, we automatically test each one, and only the successful implementations get fed back for more training. No speed optimization yet - just making sure the code works reliably.
+            </p>
+
+            <h5 class="title is-6 subsection-title">Stage 3: The Speed Revolution - Contrastive Reinforcement Learning</h5>
+            <p>
+              This is where CUDA-L1 becomes special. Traditional RL would just assign scores to generated code and hope the model figures out why some implementations are faster. That's like grading exams without showing students the correct answers.
+            </p>
+            <p>
+              Instead, we do something radically different. Look at this actual prompt we use:
+            </p>
+          </div>
+
+          <div class="highlight-box">
+            <h5 class="title is-6">We show the AI multiple CUDA implementations WITH their speed scores:</h5>
+            <ul style="text-align: left;">
+              <li>• "Here's kernel_v1 that achieves 1.2x speedup"</li>
+              <li>• "Here's kernel_v2 that achieves 2.8x speedup"</li>
+              <li>• "Here's kernel_v3 that achieves 1.5x speedup"</li>
+            </ul>
+            <p style="text-align: left; margin-top: 1rem;">
+              <strong>Then we ask three critical questions:</strong>
+            </p>
+            <ol style="text-align: left;">
+              <li>Performance Analysis: "Why is kernel_v2 so much faster? What optimizations did it use that the others didn't?"</li>
+              <li>Algorithm Design: "Based on this analysis, what optimization strategy would work even better?"</li>
+              <li>Code Implementation: "Now write a kernel that beats them all."</li>
+            </ol>
+          </div>
+
+          <div class="content has-text-left">
+            <p>
+              The magic happens because the AI can directly see and reason about performance differences. It's not guessing in the dark - it's learning from concrete examples of what makes CUDA code fast.
+            </p>
+          </div>
+
+        </div>
+      </div>
+      <!--/ How CUDA-L1 Works -->
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+
+      <!-- Results -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Results</h2>
+
+          <div class="content has-text-left">
+            <h4 class="title is-5 subsection-title">Does It Actually Work?</h4>
+            <p>
+              We tested CUDA-L1 on KernelBench, a comprehensive benchmark suite with three difficulty levels:
+            </p>
+            <ul>
+              <li>Level 1: Simple operations (like matrix multiply)</li>
+              <li>Level 2: Operator sequences (like attention mechanisms)</li>
+              <li>Level 3: Complex ML tasks (like full transformer layers)</li>
+            </ul>
+          </div>
+
+          <div class="table-container">
+            <table class="table is-striped is-fullwidth">
+              <caption>Performance of CUDA-L1 on KernelBench</caption>
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Mean</th>
+                  <th>Max</th>
+                  <th>75%</th>
+                  <th>50%</th>
+                  <th>25%</th>
+                  <th>Success<br><small># out of total</small></th>
+                  <th>Speedup<br><small># out of total</small></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>All</strong></td>
+                  <td><strong>17.7×</strong></td>
+                  <td><strong>449×</strong></td>
+                  <td>7.08×</td>
+                  <td>1.81×</td>
+                  <td>1.22×</td>
+                  <td>249/250</td>
+                  <td>242/250</td>
+                </tr>
+                <tr>
+                  <td>Level 1</td>
+                  <td>12.3×</td>
+                  <td>166×</td>
+                  <td>9.28×</td>
+                  <td>1.65×</td>
+                  <td>1.15×</td>
+                  <td>99/100</td>
+                  <td>96/100</td>
+                </tr>
+                <tr>
+                  <td>Level 2</td>
+                  <td>6.39×</td>
+                  <td>111×</td>
+                  <td>4.42×</td>
+                  <td>1.61×</td>
+                  <td>1.24×</td>
+                  <td>100/100</td>
+                  <td>97/100</td>
+                </tr>
+                <tr>
+                  <td>Level 3</td>
+                  <td>50.8×</td>
+                  <td>449×</td>
+                  <td>22.9×</td>
+                  <td>2.66×</td>
+                  <td>1.58×</td>
+                  <td>50/50</td>
+                  <td>49/50</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="content has-text-left">
+            <p>
+              The results? Mind-blowing. CUDA-L1 achieved an average 17.7× speedup across all tasks, with some kernels running up to 449× faster than the baseline PyTorch implementations.
+            </p>
+            <p>
+              Here's where it gets really interesting: the harder the task, the better CUDA-L1 performs:
+            </p>
+            <ul>
+              <li>Level 1: 12.3× average speedup</li>
+              <li>Level 2: 6.4× average speedup</li>
+              <li>Level 3: 50.8× average speedup</li>
+            </ul>
+            <p>
+              This pattern makes perfect sense - complex ML operations have more room for optimization, and CUDA-L1 excels at finding these opportunities. This is especially exciting for real-world applications like LLM inference, where complex operations dominate the workload.
+            </p>
+            <div class="figure-container" style="padding-top: 0rem; margin-top: 1rem; margin-bottom: 1rem;">
+              <img src="assets/general_result_plot_img.png" alt="Performance Comparison", style="transform: scale(0.98); transform-origin: center top;">
+            </div>
+
+            <h4 class="title is-5 subsection-title">But Does It Work on Your GPU?</h4>
+            <p>
+              We trained CUDA-L1 on NVIDIA A100s, but what if you're using a different GPU? Good news: the optimizations transfer remarkably well. We tested the same A100-optimized kernels on:
+            </p>
+          </div>
+
+          <div class="table-container">
+            <table class="table is-striped is-fullwidth">
+              <caption>CUDA-L1 performances on KernelBench across different GPU devices</caption>
+              <thead>
+                <tr>
+                  <th>GPU Device</th>
+                  <th>Mean</th>
+                  <th>Max</th>
+                  <th>75%</th>
+                  <th>50%</th>
+                  <th>25%</th>
+                  <th>Success<br><small># out of 250</small></th>
+                  <th>Speedup<br><small># out of 250</small></th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr>
+                  <td>A100 PCIe</td>
+                  <td>17.7×</td>
+                  <td>449×</td>
+                  <td>7.08×</td>
+                  <td>1.81×</td>
+                  <td>1.22×</td>
+                  <td>249</td>
+                  <td>242</td>
+              </tr>
+              <tr>
+                  <td>H100 XSM</td>
+                  <td>17.8×</td>
+                  <td>1,001×</td>
+                  <td>4.02×</td>
+                  <td>1.63×</td>
+                  <td>1.16×</td>
+                  <td>246</td>
+                  <td>235</td>
+              </tr>
+              <tr>
+                  <td>L40</td>
+                  <td>16.5×</td>
+                  <td>365×</td>
+                  <td>6.17×</td>
+                  <td>1.61×</td>
+                  <td>1.15×</td>
+                  <td>247</td>
+                  <td>234</td>
+              </tr>
+              <tr>
+                  <td>RTX 3090</td>
+                  <td>19.0×</td>
+                  <td>611×</td>
+                  <td>4.41×</td>
+                  <td>1.44×</td>
+                  <td>1.11×</td>
+                  <td>246</td>
+                  <td>227</td>
+              </tr>
+              <tr>
+                  <td>H800 XSM</td>
+                  <td>14.7×</td>
+                  <td>433×</td>
+                  <td>4.80×</td>
+                  <td>1.57×</td>
+                  <td>1.16×</td>
+                  <td>249</td>
+                  <td>243</td>
+              </tr>
+              <tr>
+                  <td>H20</td>
+                  <td>13.9×</td>
+                  <td>412×</td>
+                  <td>4.76×</td>
+                  <td>1.54×</td>
+                  <td>1.16×</td>
+                  <td>248</td>
+                  <td>236</td>
+              </tr>
+          </tbody>
+            </table>
+          </div>
+
+          <div class="content has-text-left">
+            <p>
+              That's right - without any special tuning for these GPUs, CUDA-L1's optimizations work across the board. Consumer GPUs like the RTX series even show more consistent gains than the datacenter GPUs. This suggests that the optimization patterns CUDA-L1 learns are fundamental enough to benefit any modern GPU architecture.
+            </p>
+            <p>
+              Could we do even better with GPU-specific training? Absolutely. We're planning to release specialized versions of CUDA-L1 for different GPU architectures in future updates.
+            </p>
+            <p>
+              The future of GPU programming might involve less manual optimization and more collaboration with AI that truly understands what makes kernels fast. And unlike traditional approaches, CUDA-L1 keeps getting better with each training iteration, continuously discovering new optimization patterns.
+            </p>
+          </div>
+
+        </div>
+      </div>
+      <!--/ Results -->
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+
+      <!-- Case Study -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Case Study: Bidirectional GRU 466x</h2>
+
+          <div class="content has-text-left">
+            <h4 class="title is-5 subsection-title">A Real Example: How CUDA-L1 Optimized a GRU Network</h4>
+            <p>
+              Let's look at a concrete example to see what CUDA-L1 actually does. We gave it a bidirectional multi-layer GRU (a type of neural network used in language processing) and watched the magic happen.
+            </p>
+
+            <!-- GRU Performance Image -->
+            <div class="figure-container">
+              <img src="assets/gru_performance.png" alt="GRU Optimization Performance">
+            </div>
+
+            <p>
+              CUDA-L1 applied four key optimizations:
+            </p>
+            <ol>
+              <li><strong>CUDA Graphs:</strong> Converted the entire sequence of operations into a single "super-kernel"</li>
+              <li><strong>Stream Management:</strong> Isolated execution on dedicated GPU streams</li>
+              <li><strong>Memory Optimization:</strong> Pre-allocated tensors and cached compiled graphs</li>
+              <li><strong>Reduced Branching:</strong> Eliminated unnecessary conditional logic</li>
+            </ol>
+            <p>
+              Here's where it gets fascinating. We tested each optimization individually and in combination. The results completely shattered our expectations:
+            </p>
+            <ul>
+              <li>CUDA Graphs alone: Only 2× speedup (disappointing!)</li>
+              <li>Stream Management alone: No speedup at all (1×)</li>
+              <li>CUDA Graphs + Stream Management: 260× speedup (!!)</li>
+              <li>All four optimizations: 430× speedup</li>
+            </ul>
+          </div>
+
+          <div class="highlight-box">
+            <h5 class="title is-5">Wait, what? How does 2× + 1× = 260×?</h5>
+            <div class="content has-text-left">
+              <p>The answer reveals a fundamental truth about GPU optimization: it's not additive, it's multiplicative. Think of it this way:</p>
+              <ul>
+                <li>• CUDA Graphs alone is like having a race car stuck in city traffic</li>
+                <li>• Stream Management alone is like building a highway but driving a bicycle</li>
+                <li>• Together? You get a race car on an open highway</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="content has-text-left">
+            <p>
+              The really mind-blowing part? CUDA-L1 discovered these synergistic relationships on its own. Through trial and error during training, it learned that certain optimizations are "gatekeepers" that unlock the potential of others. It figured out optimization principles that even experienced CUDA programmers might miss.
+            </p>
+            <p>
+              This is the power of Contrastive-RL: by comparing thousands of implementations with their performance scores, CUDA-L1 doesn't just memorize optimization tricks - it develops an intuition for how different techniques interact and amplify each other.
+            </p>
+          </div>
+
+          <!-- GRU Time Image -->
+          <div class="figure-container">
+            <img src="assets/gru_time.png" alt="GRU Execution Time Comparison">
+          </div>
+
+        </div>
+      </div>
+      <!--/ Case Study -->
+    </div>
+  </section>
+
+  <section class="section" id="BibTeX">
+    <div class="container content is-max-desktop">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@article{deepreinforce2025cudal1,
+  title={CUDA-L1: Improving CUDA Optimization via Contrastive Reinforcement Learning},
+  author={DeepReinforce Team},
+  journal={arXiv preprint arXiv:xxxx.xxxxx},
+  year={2025}
+}</code></pre>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <p>
+          © 2025 DeepReinforce. All rights reserved.
+        </p>
+        <p>
+          Research advancing AI through nature-inspired algorithms
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="text/javascript" src="./static/slick/slick.js"></script>
+
+
+
+
+</body></html>
