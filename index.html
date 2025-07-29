@@ -99,7 +99,167 @@
       box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
       border-radius: 2px;
     }
+   /* Code block styling */
+  .code-block {
+    position: relative;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .code-header {
+    background-color: #2d2d2d;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: #a0a0a0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #3e3e3e;
+  }
+
+  .code-language {
+    font-weight: 600;
+    color: #61dafb;
+  }
+
+  .copy-button {
+    background-color: #3e3e3e;
+    border: 1px solid #4e4e4e;
+    color: #a0a0a0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-button:hover {
+    background-color: #4e4e4e;
+    color: #ffffff;
+  }
+
+   /* Previous styles remain the same until code-content */
+
+  .code-content {
+    padding: 1rem;
+    overflow-x: auto;
+    overflow-y: auto; /* Enable vertical scrolling */
+    background-color: #1e1e1e;
+    max-height: 400px; /* Fixed maximum height */
+  }
+
+  /* Add custom scrollbar styling for dark theme */
+  .code-content::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .code-content::-webkit-scrollbar-track {
+    background: #2d2d2d;
+    border-radius: 4px;
+  }
+
+  .code-content::-webkit-scrollbar-thumb {
+    background: #4e4e4e;
+    border-radius: 4px;
+  }
+
+  .code-content::-webkit-scrollbar-thumb:hover {
+    background: #5e5e5e;
+  }
+
+  .code-content pre {
+    margin: 0;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #d4d4d4;
+    background-color: #1e1e1e; /* Dark background for pre */
+    padding: 0;
+  }
+
+  .code-content code {
+    color: #d4d4d4;
+    background-color: #1e1e1e; /* Dark background for code */
+    padding: 0;
+    display: block;
+  }
+
+  /* Override any inherited styles */
+  .code-block pre,
+  .code-block code {
+    background-color: #1e1e1e !important;
+    color: #d4d4d4 !important;
+  }
+
+  /* Syntax highlighting colors */
+  .hljs-keyword { color: #569cd6; }
+  .hljs-built_in { color: #4ec9b0; }
+  .hljs-type { color: #4ec9b0; }
+  .hljs-literal { color: #569cd6; }
+  .hljs-number { color: #b5cea8; }
+  .hljs-string { color: #ce9178; }
+  .hljs-comment { color: #6a9955; font-style: italic; }
+  .hljs-function { color: #dcdcaa; }
+  .hljs-class { color: #4ec9b0; }
+  .hljs-variable { color: #9cdcfe; }
+  .hljs-params { color: #9cdcfe; }
+
+  /* Code comparison styling */
+  .code-comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .code-comparison .code-block {
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .code-comparison {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Performance badge */
+  .performance-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: linear-gradient(135deg, #00a6ff 0%, #0066cc 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
   </style>
+  <script>
+  // Copy code functionality
+function copyCode(button) {
+  const codeBlock = button.closest('.code-block');
+  const code = codeBlock.querySelector('pre code').textContent;
+
+  navigator.clipboard.writeText(code).then(() => {
+    const originalText = button.textContent;
+    button.textContent = 'Copied!';
+    button.style.backgroundColor = '#0066cc';
+    button.style.color = 'white';
+
+    setTimeout(() => {
+      button.textContent = originalText;
+      button.style.backgroundColor = '';
+      button.style.color = '';
+    }, 2000);
+  });
+}
+  </script>
 </head>
 
 <body>
@@ -173,9 +333,12 @@
               </span>
 
               <!-- Speedup Image -->
-            <div class="figure-container" style="padding-top: 0rem; margin-top: 2rem; margin-bottom: -2rem;">
-              <img src="assets/general_result.png" alt="CUDA-L1 Speedup Results" style="transform: scale(0.9); transform-origin: center top;">
-              <caption>Average speedup achieved by CUDA-L1 across different architectures on KernelBench.</caption>
+            <div class="figure-container" style="padding-top: 0rem; margin-top: 2rem; margin-bottom: 0rem;">
+              <img src="assets/speedup_and_demo.png" alt="CUDA-L1 Speedup Results" style="transform: scale(0.7); transform-origin: center top; margin-top: 1rem; margin-bottom: -7rem;">
+              <div class="subcaptions" style="text-align: center; margin-top: 0px; margin-bottom: -2rem; line-height: 1.4;">
+              <p style="margin: 0 0 0px 0;"><small>Fig (left) Average speedup across different architectures on KernelBench; Fig (right) A showcase of <code>diag(A) * B</code> reference and CUDA-L1 implementations. The optimized implementation reduces complexity from O(N²M) to O(NM), achieving <strong>64×</strong> speedup by replacing full matrix multiplication with element-wise operations.</small></p>
+            </div>
+            </div>
             </div>
             </div>
           </div>
@@ -208,7 +371,7 @@
               If you've ever tried optimizing CUDA code, you know the pain. It's like solving a massive puzzle where you're constantly tweaking memory access patterns, adjusting thread blocks, and running endless profiling tests. Engineers spend weeks or months on this stuff, and it's honestly exhausting.
             </p>
 
-            <h4 class="title is-5 subsection-title">Enter AI: What if LLMs Could Do This For Us?</h4>
+            <h4 class="title is-5 subsection-title">What if LLMs Could Do This For Us?</h4>
             <p>
               Here's where things get interesting. Recent LLM models - think DeepSeek-R1 and OpenAI's o1 - are getting pretty good at writing code. And here's the kicker: CUDA optimization has a super clear reward signal - speed! Your code either runs faster or it doesn't. That's perfect for training RL.
             </p>
@@ -218,70 +381,13 @@
 
             <h4 class="title is-5 subsection-title">Introducing CUDA-L1</h4>
             <p>
-              So we built CUDA-L1, which uses something we call "contrastive reinforcement learning." Think of it like this: instead of just trying random stuff, our AI compares different CUDA versions side-by-side and learns why some are faster than others. It's like having a coach that shows you good vs. bad examples until you get it.
+              So we built CUDA-L1, which uses something we call "contrastive reinforcement learning." Think of it like this: instead of just trying random stuff, our AI compares different CUDA versions side-by-side and learns why some are faster than others. It's like having a coach that shows you good vs. bad examples until you get it. And we found CUDA-L1 excels at:
             </p>
-
-            <!-- The Results Are Mind-Blowing section moved here -->
-            <div class="highlight-box">
-              <h3 class="title is-4 has-text-centered">The Results Are Mind-Blowing</h3>
-              <div class="columns is-multiline">
-                <div class="column is-half">
-                  <div class="result-card">
-                    <div class="result-number">17.7×</div>
-                    <div class="result-label">Average speedup across 250 benchmarks</div>
-                  </div>
-                </div>
-                <div class="column is-half">
-                  <div class="result-card">
-                    <div class="result-number">449×</div>
-                    <div class="result-label">Best case speedup (not a typo!)</div>
-                  </div>
-                </div>
-              </div>
-              <p class="has-text-centered" style="margin-top: 1rem;">
-                <table class="table is-striped is-fullwidth">
-                  <caption>CUDA-L1 Works great on different GPUs too:</caption>
-                  <div> </div>
-                  <thead>
-                    <tr>
-                      <th>GPU Model</th>
-                      <th>Average Speedup</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>H100</td>
-                      <td>17.8×</td>
-                    </tr>
-                    <tr>
-                      <td>RTX 3090</td>
-                      <td>19.0×</td>
-                    </tr>
-                    <tr>
-                      <td>L40</td>
-                      <td>16.5×</td>
-                    </tr>
-                    <tr>
-                      <td>H800</td>
-                      <td>14.7×</td>
-                    </tr>
-                    <tr>
-                      <td>H20</td>
-                      <td>13.9×</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              </p>
-            </div>
-
-            <h4 class="title is-5 subsection-title">What Makes This Special?</h4>
-            <p>Here's what blew our minds about what CUDA-L1 learned on its own:</p>
             <ul style="text-align: left;">
-              <li>• It discovered optimization techniques by itself - stuff like memory coalescing, loop unrolling, operation fusion. Some of these are well-known, others are rarely used.</li>
-              <li>• It figures out the perfect combo - like a chef who knows exactly which spices work together, it combines optimizations in ways that maximize performance.</li>
-              <li>• It learned the "rules" of CUDA - like how some optimizations multiply each other's effects, or how you need to apply certain "gatekeeper" techniques first before others will work.</li>
-              <li>• It spots hidden problems - sometimes it rejects optimizations that look good on paper but actually slow things down due to sneaky issues like CPU-GPU sync overhead.</li>
+              <li><strong>Discover optimization techniques</strong> – techniques like memory coalescing, loop unrolling, operation fusion. Some of these are well-known, others are rarely used.</li>
+              <li><strong>Figure out the perfect combo</strong> – like a chef who knows exactly which spices work together, it combines optimizations in ways that maximize performance.</li>
+              <li><strong>Learn the "rules" of CUDA</strong> – like how some optimizations multiply each other's effects, or how you need to apply certain "gatekeeper" techniques first before others will work.</li>
+              <li><strong>Spot hidden problems</strong> – sometimes it rejects optimizations that look good on paper but actually slow things down due to sneaky issues like CPU-GPU sync overhead.</li>
             </ul>
           </div>
         </div>
@@ -297,7 +403,7 @@
       <!-- How CUDA-L1 Works -->
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
-          <h2 class="title is-3">How CUDA-L1 Works</h2>
+          <h2 class="title is-3">How CUDA-L1 Works ?</h2>
 
           <div class="content has-text-left">
             <h4 class="title is-5 subsection-title">The Problem: Why Can't Current LLMs Write Good CUDA?</h4>
@@ -305,7 +411,7 @@
               Ask any AI to write CUDA code and you'll likely get something that doesn't compile, crashes, or runs painfully slow. The reason is simple: these models barely saw any quality CUDA code during training. It's like asking someone who's only read cooking blogs to become a chef.
             </p>
 
-            <h4 class="title is-5 subsection-title">Enter CUDA-L1: A Three-Step Recipe for Success</h4>
+            <h4 class="title is-5 subsection-title">CUDA-L1: A Three-Step Recipe</h4>
             <p>
               We built CUDA-L1 with a three-stage pipeline: supervised learning (learn the basics), self-supervised learning (practice until perfect), and contrastive reinforcement learning (compete for speed).
             </p>
@@ -327,19 +433,17 @@
 
             <h5 class="title is-6 subsection-title">Stage 3: The Speed Revolution - Contrastive Reinforcement Learning</h5>
             <p>
-              This is where CUDA-L1 becomes special. Traditional RL would just assign scores to generated code and hope the model figures out why some implementations are faster. That's like grading exams without showing students the correct answers.
-            </p>
-            <p>
-              Instead, we do something radically different. Look at this actual prompt we use:
+              This is where CUDA-L1 becomes special. Traditional RL would just assign scores to generated code and hope the model figures out why some implementations are faster. That's like grading exams without showing students the correct answers. Instead, we do something radically different. Look at this actual prompt we use:
             </p>
           </div>
-
           <div class="highlight-box">
-            <h5 class="title is-6">We show the AI multiple CUDA implementations WITH their speed scores:</h5>
+          <h5 class="title is-6">CUDA Kernel Optimization Prompt:</h5>
+          <div class="content has-text-left">
+          <h5 class="title is-6">We show the AI multiple CUDA implementations WITH their speed scores:</h5>
             <ul style="text-align: left;">
-              <li>• "Here's kernel_v1 that achieves 1.2x speedup"</li>
-              <li>• "Here's kernel_v2 that achieves 2.8x speedup"</li>
-              <li>• "Here's kernel_v3 that achieves 1.5x speedup"</li>
+              <li>"Here's kernel_v1 that achieves 1.2x speedup"</li>
+              <li>"Here's kernel_v2 that achieves 2.8x speedup"</li>
+              <li>"Here's kernel_v3 that achieves 1.5x speedup"</li>
             </ul>
             <p style="text-align: left; margin-top: 1rem;">
               <strong>Then we ask three critical questions:</strong>
@@ -349,7 +453,7 @@
               <li>Algorithm Design: "Based on this analysis, what optimization strategy would work even better?"</li>
               <li>Code Implementation: "Now write a kernel that beats them all."</li>
             </ol>
-          </div>
+        </div>
 
           <div class="content has-text-left">
             <p>
@@ -362,6 +466,127 @@
       <!--/ How CUDA-L1 Works -->
     </div>
   </section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!-- Mitigating Reward Hacking -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Mitigating Reward Hacking in RL Training</h2>
+
+        <div class="content has-text-left">
+          <p>
+            Reinforcement learning is notorious for exhibiting reward hacking behaviors, where models exploit system vulnerabilities to achieve higher rewards while generating outputs that deviate from the intended objectives. In our experiments, we discovered that over 30% of generated implementations attempted some form of reward hacking.
+          </p>
+
+          <h4 class="title is-5 subsection-title">Reward Hacking Cases</h4>
+          <p>
+            During our initial training procedure, we identified three major categories of reward hacking behaviors:
+          </p>
+
+          <h5>1. Improper Timing Measurement</h5>
+          <p>
+            KernelBench measures execution time by recording timing events on the main CUDA stream as follows:
+          </p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-language">CUDA - Vulnerable Timing</span>
+              <button class="copy-button" onclick="copyCode(this)">Copy</button>
+            </div>
+            <div class="code-content">
+              <pre><code><span class="hljs-function">start_event</span>.<span class="hljs-function">record</span>(original_model_stream)
+<span class="hljs-function">model</span>(*inputs)
+<span class="hljs-function">end_event</span>.<span class="hljs-function">record</span>(original_model_stream)
+torch.cuda.<span class="hljs-function">synchronize</span>(device=device)</code></pre>
+            </div>
+          </div>
+
+          <div class="warning-box" style="background-color: #fff3cd;">
+            <p><strong>Warning:</strong> This vulnerability led to artificial 18× speedups that were entirely fake - the actual computation performance was unchanged!</p>
+          </div>
+
+          <p>
+            However, RL-generated code exploits this by creating additional CUDA streams that execute asynchronously. Since KernelBench only monitors the main stream, it fails to capture the actual execution time of operations running on parallel streams. This vulnerability is significant: in our initial implementation, we find that 82 out of 250 (32.8%) RL-generated implementations exploit this timing loophole to appear faster than they actually are, leading to an overall speedup of 18×. To address this issue, prompt engineering alone is insufficient. Our fix synchronizes all CUDA streams:
+          </p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-language">CUDA - Fixed Timing</span>
+              <button class="copy-button" onclick="copyCode(this)">Copy</button>
+            </div>
+            <div class="code-content">
+              <pre><code><span class="hljs-keyword">if</span> custom_contain_new_streams:
+    <span class="hljs-keyword">for</span> stream <span class="hljs-keyword">in</span> custom_model_streams:
+        custom_model_stream.<span class="hljs-function">wait_stream</span>(stream)
+<span class="hljs-function">end_event</span>.<span class="hljs-function">record</span>(custom_model_stream)</code></pre>
+            </div>
+          </div>
+
+          <h5>2. Hyperparameter Manipulation</h5>
+          <p>
+            In KernelBench, each computational task is associated with specific hyper- parameters, including <em>batch_size</em>, <em>dim</em>, <em>in_features</em> dimension, <em>out_features</em> dimension, <em>scaling_factor</em>, and others. The RL agent learned to exploit these parameters by generating code that artificially reduces their values, thereby achieving superficial speedup improvements that do not reflect genuine optimization performance.
+          </p>
+          <h5>3. Result Caching</h5>
+          <p>
+            The RL agent developed strategies to cache computational results across evaluation batches based on input addresses. When another input’s address matches a cached one, it returns the cached output. The following code snippet gives an illustration:
+          </p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-language">Python - Caching Example</span>
+              <button class="copy-button" onclick="copyCode(this)">Copy</button>
+            </div>
+            <div class="code-content">
+              <pre><code>cache_key = x.data_ptr()
+<span class="hljs-keyword">if</span> cache_key <span class="hljs-keyword">in</span> self.cache:
+    <span class="hljs-keyword">return</span> self.cache[cache_key]</code></pre>
+            </div>
+          </div>
+
+          <h4 class="title is-5 subsection-title">Defense Strategies</h4>
+          <p>
+            To combat these sophisticated reward hacking behaviors, we developed a multi-layered defense system combining automated detection, continuous learning, and mathematical constraints.
+          </p>
+
+          <h5>1. Adversarial Reward Checking Model</h5>
+          <p>
+            We deployed DeepSeek-R1 as an adversarial checker that analyzes generated code for potential exploits. The model achieves over 60% detection accuracy through pattern analysis, semantic understanding, and anomaly detection. When speedups exceed suspicious thresholds (e.g., >10× for simple operations), it triggers multi-stage verification including output consistency checks, memory usage analysis, and GPU utilization metrics.
+          </p>
+
+          <h5>2. Dynamic Hacking-Case Database</h5>
+          <p>
+            A continuously updated database containing 500+ unique hacking patterns helps identify new exploits. For each generated implementation, we retrieve similar hacking cases using AST-based code analysis and performance profiling. This contextual information improves detection accuracy by 25% and allows us to track how hacking strategies evolve across training iterations.
+          </p>
+
+          <h5>3. Reward Smoothing and Normalization</h5>
+          <p>
+            To prevent over-optimization for extreme cases, we apply mathematical constraints on rewards:
+          </p>
+
+          <div style="background-color: #f5f5f5; padding: 1.5rem; border-radius: 8px; margin: 1rem 0;">
+            <p style="text-align: center; font-family: 'Times New Roman', serif; font-size: 1.1rem;">
+              <em>r</em><sub>normalized</sub> = (<em>r</em> - μ) / σ
+              <br>
+              <em>r</em><sub>smooth</sub> = clip(<em>r</em><sub>normalized</sub>, -<em>k</em>, <em>k</em>)
+            </p>
+          </div>
+
+          <p>
+            Here, μ and σ are rolling statistics updated every 100 iterations, and <em>k</em> = 1.5 represents the maximum reasonable speedup. For suspicious high-reward cases with low confidence, we apply additional dampening based on consistency metrics and alignment with known optimization patterns.
+          </p>
+
+          <div class="highlight-box">
+            <p><strong>Key Takeaway:</strong> The arms race between the RL agent and our detection systems highlights the importance of robust evaluation frameworks. Our multi-layered approach has proven effective at maintaining training integrity while still allowing genuine breakthrough optimizations to be rewarded appropriately.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!--/ Mitigating Reward Hacking -->
+  </div>
+</section>
 
   <section class="section">
     <div class="container is-max-desktop">
@@ -401,43 +626,43 @@
               <tbody>
                 <tr>
                   <td><strong>All</strong></td>
-                  <td><strong>17.7×</strong></td>
-                  <td><strong>449×</strong></td>
-                  <td>7.08×</td>
-                  <td>1.81×</td>
-                  <td>1.22×</td>
+                  <td><strong>3.12×</strong></td>
+                  <td><strong>120×</strong></td>
+                  <td>2.25×</td>
+                  <td>1.42×</td>
+                  <td>1.17×</td>
                   <td>249/250</td>
-                  <td>242/250</td>
+                  <td>240/250</td>
                 </tr>
                 <tr>
                   <td>Level 1</td>
-                  <td>12.3×</td>
-                  <td>166×</td>
-                  <td>9.28×</td>
-                  <td>1.65×</td>
-                  <td>1.15×</td>
+                  <td>2.78×</td>
+                  <td>65.8×</td>
+                  <td>1.75×</td>
+                  <td>1.28×</td>
+                  <td>1.12×</td>
                   <td>99/100</td>
-                  <td>96/100</td>
+                  <td>94/100</td>
                 </tr>
                 <tr>
                   <td>Level 2</td>
-                  <td>6.39×</td>
-                  <td>111×</td>
-                  <td>4.42×</td>
-                  <td>1.61×</td>
-                  <td>1.24×</td>
+                  <td>3.55×</td>
+                  <td>120×</td>
+                  <td>2.05×</td>
+                  <td>1.39×</td>
+                  <td>1.20×</td>
                   <td>100/100</td>
-                  <td>97/100</td>
+                  <td>98/100</td>
                 </tr>
                 <tr>
                   <td>Level 3</td>
-                  <td>50.8×</td>
-                  <td>449×</td>
-                  <td>22.9×</td>
-                  <td>2.66×</td>
-                  <td>1.58×</td>
+                  <td>2.96×</td>
+                  <td>24.9×</td>
+                  <td>2.60×</td>
+                  <td>1.94×</td>
+                  <td>1.42×</td>
                   <td>50/50</td>
-                  <td>49/50</td>
+                  <td>48/50</td>
                 </tr>
               </tbody>
             </table>
@@ -458,9 +683,6 @@
             <p>
               This pattern makes perfect sense - complex ML operations have more room for optimization, and CUDA-L1 excels at finding these opportunities. This is especially exciting for real-world applications like LLM inference, where complex operations dominate the workload.
             </p>
-            <div class="figure-container" style="padding-top: 0rem; margin-top: 1rem; margin-bottom: 1rem;">
-              <img src="assets/general_result_plot_img.png" alt="Performance Comparison", style="transform: scale(0.98); transform-origin: center top;">
-            </div>
 
             <h4 class="title is-5 subsection-title">But Does It Work on Your GPU?</h4>
             <p>
@@ -470,7 +692,7 @@
 
           <div class="table-container">
             <table class="table is-striped is-fullwidth">
-              <caption>CUDA-L1 performances on KernelBench across different GPU devices</caption>
+              <caption>CUDA-L1 overall performance on KernelBench across different GPU devices</caption>
               <thead>
                 <tr>
                   <th>GPU Device</th>
@@ -486,63 +708,53 @@
               <tbody>
               <tr>
                   <td>A100 PCIe</td>
-                  <td>17.7×</td>
-                  <td>449×</td>
-                  <td>7.08×</td>
-                  <td>1.81×</td>
-                  <td>1.22×</td>
-                  <td>249</td>
-                  <td>242</td>
+                  <td><strong>3.12×</strong></td>
+                  <td>120×</td>
+                  <td><strong>2.25×</strong></td>
+                  <td><strong>1.42×</strong></td>
+                  <td><strong>1.17×</strong></td>
+                  <td><strong>249</strong></td>
+                  <td><strong>240</strong></td>
               </tr>
               <tr>
-                  <td>H100 XSM</td>
-                  <td>17.8×</td>
-                  <td>1,001×</td>
-                  <td>4.02×</td>
-                  <td>1.63×</td>
-                  <td>1.16×</td>
-                  <td>246</td>
-                  <td>235</td>
-              </tr>
-              <tr>
-                  <td>L40</td>
-                  <td>16.5×</td>
-                  <td>365×</td>
-                  <td>6.17×</td>
-                  <td>1.61×</td>
-                  <td>1.15×</td>
-                  <td>247</td>
-                  <td>234</td>
-              </tr>
-              <tr>
-                  <td>RTX 3090</td>
-                  <td>19.0×</td>
-                  <td>611×</td>
-                  <td>4.41×</td>
-                  <td>1.44×</td>
-                  <td>1.11×</td>
-                  <td>246</td>
+                  <td>H100</td>
+                  <td>2.39×</td>
+                  <td>81.9×</td>
+                  <td>1.76×</td>
+                  <td>1.32×</td>
+                  <td>1.09×</td>
+                  <td><strong>250</strong></td>
                   <td>227</td>
               </tr>
               <tr>
-                  <td>H800 XSM</td>
-                  <td>14.7×</td>
-                  <td>433×</td>
-                  <td>4.80×</td>
+                  <td>L40</td>
+                  <td><strong>3.12×</strong></td>
+                  <td><strong>182×</strong></td>
+                  <td>1.89×</td>
+                  <td>1.31×</td>
+                  <td>1.08×</td>
+                  <td>248</td>
+                  <td>228</td>
+              </tr>
+              <tr>
+                  <td>RTX 3090</td>
+                  <td>2.50×</td>
+                  <td>114×</td>
                   <td>1.57×</td>
-                  <td>1.16×</td>
-                  <td>249</td>
-                  <td>243</td>
+                  <td>1.18×</td>
+                  <td>1.03×</td>
+                  <td>242</td>
+                  <td>213</td>
               </tr>
               <tr>
                   <td>H20</td>
-                  <td>13.9×</td>
-                  <td>412×</td>
-                  <td>4.76×</td>
-                  <td>1.54×</td>
-                  <td>1.16×</td>
-                  <td>248</td>
-                  <td>236</td>
+                  <td>2.37×</td>
+                  <td>63.7×</td>
+                  <td>1.81×</td>
+                  <td>1.34×</td>
+                  <td>1.11×</td>
+                  <td>247</td>
+                  <td>233</td>
               </tr>
           </tbody>
             </table>
@@ -567,74 +779,510 @@
   </section>
 
   <section class="section">
-    <div class="container is-max-desktop">
+  <div class="container is-max-desktop">
 
-      <!-- Case Study -->
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          <h2 class="title is-3">Case Study: Bidirectional GRU 466x</h2>
+    <!-- Case Study -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Case Studies</h2>
 
-          <div class="content has-text-left">
-            <h4 class="title is-5 subsection-title">A Real Example: How CUDA-L1 Optimized a GRU Network</h4>
-            <p>
-              Let's look at a concrete example to see what CUDA-L1 actually does. We gave it a bidirectional multi-layer GRU (a type of neural network used in language processing) and watched the magic happen.
-            </p>
+        <div class="content has-text-left">
+          <p>
+            Let's dive deep into three examples to understand what CUDA-L1 actually does:
+          </p>
 
-            <!-- GRU Performance Image -->
-            <div class="figure-container">
-              <img src="assets/gru_performance.png" alt="GRU Optimization Performance">
+          <h4 class="title is-5 subsection-title">Case 1: Diagonal Matrix Multiplication - 64× Faster</h4>
+          <p>
+            This task performs matrix multiplication between a diagonal matrix (represented by its diagonal elements) and a dense matrix, both with dimension N=4096.
+          </p>
+
+          <!-- Code comparison for diagonal matrix multiplication -->
+          <div class="code-comparison">
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-language">Python - Reference Implementation</span>
+                <button class="copy-button" onclick="copyCode(this)">Copy</button>
+              </div>
+              <div class="code-content">
+                <pre><code><span class="hljs-keyword">class</span> <span class="hljs-class">Model</span>(nn.Module):
+    <span class="hljs-keyword">def</span> <span class="hljs-function">forward</span>(<span class="hljs-params">self, A, B</span>):
+        <span class="hljs-comment"># A: (N,) - 1D tensor of shape N</span>
+        <span class="hljs-comment"># B: (N, M) - 2D tensor of shape N x M</span>
+        <span class="hljs-comment"># torch.diag(A): (N, N) - creates diagonal matrix from A</span>
+        <span class="hljs-comment"># Result: (N, N) @ (N, M) = (N, M)</span>
+        <span class="hljs-keyword">return</span> torch.diag(A) @ B</code></pre>
+              </div>
             </div>
 
-            <p>
-              CUDA-L1 applied four key optimizations:
-            </p>
-            <ol>
-              <li><strong>CUDA Graphs:</strong> Converted the entire sequence of operations into a single "super-kernel"</li>
-              <li><strong>Stream Management:</strong> Isolated execution on dedicated GPU streams</li>
-              <li><strong>Memory Optimization:</strong> Pre-allocated tensors and cached compiled graphs</li>
-              <li><strong>Reduced Branching:</strong> Eliminated unnecessary conditional logic</li>
-            </ol>
-            <p>
-              Here's where it gets fascinating. We tested each optimization individually and in combination. The results completely shattered our expectations:
-            </p>
-            <ul>
-              <li>CUDA Graphs alone: Only 2× speedup (disappointing!)</li>
-              <li>Stream Management alone: No speedup at all (1×)</li>
-              <li>CUDA Graphs + Stream Management: 260× speedup (!!)</li>
-              <li>All four optimizations: 430× speedup</li>
-            </ul>
-          </div>
-
-          <div class="highlight-box">
-            <h5 class="title is-5">Wait, what? How does 2× + 1× = 260×?</h5>
-            <div class="content has-text-left">
-              <p>The answer reveals a fundamental truth about GPU optimization: it's not additive, it's multiplicative. Think of it this way:</p>
-              <ul>
-                <li>• CUDA Graphs alone is like having a race car stuck in city traffic</li>
-                <li>• Stream Management alone is like building a highway but driving a bicycle</li>
-                <li>• Together? You get a race car on an open highway</li>
-              </ul>
+            <div class="code-block">
+              <div class="code-header">
+                <span class="code-language">Python - CUDA-L1 Optimized</span>
+                <button class="copy-button" onclick="copyCode(this)">Copy</button>
+              </div>
+              <div class="performance-badge">64× faster</div>
+              <div class="code-content">
+                <pre><code><span class="hljs-keyword">class</span> <span class="hljs-class">Model</span>(nn.Module):
+    <span class="hljs-keyword">def</span> <span class="hljs-function">forward</span>(<span class="hljs-params">self, A, B</span>):
+        <span class="hljs-keyword">return</span> A.unsqueeze(<span class="hljs-number">1</span>) * B</code></pre>
+              </div>
             </div>
           </div>
 
-          <div class="content has-text-left">
-            <p>
-              The really mind-blowing part? CUDA-L1 discovered these synergistic relationships on its own. Through trial and error during training, it learned that certain optimizations are "gatekeepers" that unlock the potential of others. It figured out optimization principles that even experienced CUDA programmers might miss.
-            </p>
-            <p>
-              This is the power of Contrastive-RL: by comparing thousands of implementations with their performance scores, CUDA-L1 doesn't just memorize optimization tricks - it develops an intuition for how different techniques interact and amplify each other.
-            </p>
-          </div>
+          <p>
+            The optimized implementation leverages PyTorch's broadcasting mechanism brilliantly. Instead of creating a full N×N diagonal matrix (which would be mostly zeros), it simply reshapes the diagonal vector A from (N,) to (N, 1) and uses broadcasting to multiply each row of B by the corresponding element of A.
+          </p>
+          <p>
+            The benefits are substantial:
+          </p>
+          <ul>
+            <li>Memory: O(1) extra memory instead of O(N²)</li>
+            <li>Computation: O(NM) operations instead of O(N²M)</li>
+            <li>Result: 64× speedup!</li>
+          </ul>
+          <p>
+            What's remarkable is that CUDA-L1 discovered this algebraic simplification on its own through RL exploration. By testing semantically equivalent implementations, it learned to identify patterns where computationally expensive operations can be replaced with more efficient alternatives.
+          </p>
 
-          <!-- GRU Time Image -->
-          <div class="figure-container">
-            <img src="assets/gru_time.png" alt="GRU Execution Time Comparison">
-          </div>
+          <h4 class="title is-5 subsection-title">Case 2: LSTM Networks - 3.4× Faster</h4>
+<p>
+  For a classical LSTM neural network (Level 3, Task 35), CUDA-L1 achieved a 3.4× speedup by applying three key optimizations:
+</p>
+<ol>
+  <li><strong>CUDA Graphs:</strong> Captures the entire LSTM computation sequence into a replayable graph structure</li>
+  <li><strong>Memory Contiguity:</strong> Ensures all tensors maintain contiguous memory layouts</li>
+  <li><strong>Static Tensor Reuse:</strong> Pre-allocates tensors and reuses them across forward passes</li>
+</ol>
 
-        </div>
-      </div>
-      <!--/ Case Study -->
+<!-- Code comparison for LSTM -->
+<div class="code-comparison">
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-language">Python - Reference Implementation</span>
+      <button class="copy-button" onclick="copyCode(this)">Copy</button>
     </div>
+    <div class="code-content">
+      <pre><code><span class="hljs-keyword">import</span> torch
+<span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn
+
+<span class="hljs-keyword">class</span> <span class="hljs-class">Model</span>(nn.Module):
+    <span class="hljs-keyword">def</span> <span class="hljs-function">__init__</span>(<span class="hljs-params">self, input_size, hidden_size, num_layers, output_size, dropout=<span class="hljs-number">0.0</span></span>):
+        <span class="hljs-string">"""
+        Initialize the LSTM model.
+        :param input_size: The number of expected features in the input `x`
+        :param hidden_size: The number of features in the hidden state `h`
+        :param num_layers: Number of recurrent layers
+        :param output_size: The number of output features
+        :param dropout: If non-zero, introduces a Dropout layer on the outputs of each LSTM layer except the last layer, with dropout probability equal to `dropout`
+        """</span>
+        <span class="hljs-keyword">super</span>(Model, self).__init__()
+        <span class="hljs-comment"># Initialize hidden state with random values</span>
+        self.h0 = torch.randn((num_layers, batch_size, hidden_size))
+        self.c0 = torch.randn((num_layers, batch_size, hidden_size))
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=<span class="hljs-literal">True</span>, dropout=dropout, bidirectional=<span class="hljs-literal">False</span>)
+        self.fc = nn.Linear(hidden_size, output_size)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-function">forward</span>(<span class="hljs-params">self, x</span>):
+        <span class="hljs-string">"""
+        Forward pass through the LSTM model.
+        :param x: The input tensor, shape (batch_size, sequence_length, input_size)
+        :return: The output tensor, shape (batch_size, sequence_length, output_size)
+        """</span>
+        self.h0 = self.h0.to(x.device)
+        self.c0 = self.h0.to(x.device)  <span class="hljs-comment"># BUG: This should be self.c0.to(x.device)</span>
+
+        <span class="hljs-comment"># Forward propagate LSTM</span>
+        out, state = self.lstm(x, (self.h0, self.c0))  <span class="hljs-comment"># out: tensor of shape (batch_size, seq_length, hidden_size)</span>
+
+        <span class="hljs-comment"># Decode the hidden state of the last time step</span>
+        out = self.fc(out[:, <span class="hljs-number">-1</span>, :])  <span class="hljs-comment"># out: tensor of shape (batch_size, output_size)</span>
+
+        <span class="hljs-keyword">return</span> state[<span class="hljs-number">0</span>]
+
+<span class="hljs-comment"># Test code</span>
+batch_size = <span class="hljs-number">10</span>
+sequence_length = <span class="hljs-number">512</span>
+input_size = <span class="hljs-number">128</span>
+hidden_size = <span class="hljs-number">256</span>
+num_layers = <span class="hljs-number">6</span>
+output_size = <span class="hljs-number">10</span>
+dropout = <span class="hljs-number">0.0</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-function">get_inputs</span>():
+    <span class="hljs-keyword">return</span> [torch.randn(batch_size, sequence_length, input_size)]
+
+<span class="hljs-keyword">def</span> <span class="hljs-function">get_init_inputs</span>():
+    <span class="hljs-keyword">return</span> [input_size, hidden_size, num_layers, output_size, dropout]</code></pre>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-language">Python - CUDA-L1 Optimized</span>
+      <button class="copy-button" onclick="copyCode(this)">Copy</button>
+    </div>
+    <div class="performance-badge">3.4× faster</div>
+    <div class="code-content">
+      <pre><code><span class="hljs-keyword">import</span> torch
+<span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn
+<span class="hljs-keyword">import</span> torch.cuda <span class="hljs-keyword">as</span> cuda
+
+<span class="hljs-keyword">class</span> <span class="hljs-class">ModelNew</span>(nn.Module):
+    <span class="hljs-keyword">def</span> <span class="hljs-function">__init__</span>(<span class="hljs-params">self, input_size, hidden_size, num_layers, output_size, dropout=<span class="hljs-number">0.0</span></span>):
+        <span class="hljs-string">"""
+        Initialize the LSTM model with three core optimization techniques.
+
+        Color coding:
+        - 🔵 BLUE: CUDA Graphs optimization
+        - 🟢 GREEN: Memory Contiguity optimization
+        - 🟠 ORANGE: Static Tensor Reuse optimization
+        """</span>
+        <span class="hljs-keyword">super</span>(ModelNew, self).__init__()
+
+        <span class="hljs-comment"># Initialize hidden states as buffers</span>
+        self.register_buffer(<span class="hljs-string">'h0'</span>, torch.randn((num_layers, batch_size, hidden_size)))
+        self.register_buffer(<span class="hljs-string">'c0'</span>, torch.randn((num_layers, batch_size, hidden_size)))
+
+        <span class="hljs-comment"># Use PyTorch's optimized LSTM implementation</span>
+        self.lstm = nn.LSTM(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            batch_first=<span class="hljs-literal">True</span>,
+            dropout=dropout,
+            bidirectional=<span class="hljs-literal">False</span>
+        )
+
+        self.fc = nn.Linear(hidden_size, output_size)
+
+        <span class="hljs-comment"># 🔵 CUDA GRAPHS: Variables for graph capture and replay</span>
+        self.graph = <span class="hljs-literal">None</span>
+        self.graph_ready = <span class="hljs-literal">False</span>
+        self.input_shape = <span class="hljs-literal">None</span>
+
+        <span class="hljs-comment"># 🟠 STATIC TENSOR REUSE: Pre-allocated tensors for graph execution</span>
+        self.static_input = <span class="hljs-literal">None</span>
+        self.static_output = <span class="hljs-literal">None</span>
+
+        <span class="hljs-comment"># 🔵 CUDA GRAPHS: Streams for graph operations</span>
+        self.graph_stream = <span class="hljs-literal">None</span>
+
+        <span class="hljs-comment"># Track if we're running on CUDA</span>
+        self.is_cuda_available = torch.cuda.is_available()
+
+    <span class="hljs-keyword">def</span> <span class="hljs-function">_initialize_cuda_resources</span>(<span class="hljs-params">self</span>):
+        <span class="hljs-string">"""🔵 CUDA GRAPHS: Initialize CUDA stream for graph operations"""</span>
+        <span class="hljs-keyword">if</span> self.graph_stream <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+            self.graph_stream = cuda.Stream()
+
+    <span class="hljs-keyword">def</span> <span class="hljs-function">_capture_graph</span>(<span class="hljs-params">self, x, result</span>):
+        <span class="hljs-string">"""
+        🔵 CUDA GRAPHS: Capture the computation graph for replay
+        🟠 STATIC TENSOR REUSE: Create static tensors for graph capture
+        """</span>
+        <span class="hljs-comment"># 🟠 STATIC TENSOR REUSE: Clone tensors for static allocation</span>
+        self.static_input = x.clone()
+        self.static_output = result.clone()
+
+        <span class="hljs-comment"># 🔵 CUDA GRAPHS: Capture the computation graph</span>
+        <span class="hljs-keyword">with</span> torch.cuda.stream(self.graph_stream):
+            self.graph = cuda.CUDAGraph()
+            <span class="hljs-keyword">with</span> cuda.graph(self.graph):
+                <span class="hljs-comment"># Operations to capture in the graph</span>
+                static_out, _ = self.lstm(self.static_input, (self.h0, self.c0))
+
+                <span class="hljs-comment"># 🟢 MEMORY CONTIGUITY: Ensure contiguous memory layout</span>
+                static_last = static_out[:, <span class="hljs-number">-1</span>, :].contiguous()
+
+                self.static_output.copy_(self.fc(static_last))
+
+        <span class="hljs-comment"># Wait for graph capture to complete</span>
+        torch.cuda.synchronize()
+
+        <span class="hljs-comment"># Mark graph as ready for use</span>
+        self.graph_ready = <span class="hljs-literal">True</span>
+
+    <span class="hljs-keyword">def</span> <span class="hljs-function">_standard_forward</span>(<span class="hljs-params">self, x</span>):
+        <span class="hljs-string">"""Standard forward pass with memory contiguity optimization"""</span>
+
+        <span class="hljs-comment"># 🟢 MEMORY CONTIGUITY: Ensure input is contiguous</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> x.is_contiguous():
+            x = x.contiguous()
+
+        <span class="hljs-comment"># Forward pass through LSTM</span>
+        out, _ = self.lstm(x, (self.h0, self.c0))
+
+        <span class="hljs-comment"># 🟢 MEMORY CONTIGUITY: Make last output contiguous for optimal memory access</span>
+        last_out = out[:, <span class="hljs-number">-1</span>, :].contiguous()
+
+        <span class="hljs-keyword">return</span> self.fc(last_out)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-function">forward</span>(<span class="hljs-params">self, x</span>):
+        <span class="hljs-string">"""
+        Forward pass through the LSTM model with three optimization techniques.
+
+        Optimization flow:
+        1. 🔵 CUDA GRAPHS: Check if we can use the captured graph (fast path)
+        2. 🟠 STATIC TENSOR REUSE: Use pre-allocated tensors for graph replay
+        3. 🟢 MEMORY CONTIGUITY: Ensure optimal memory layout throughout
+        """</span>
+
+        <span class="hljs-comment"># 🔵 CUDA GRAPHS: Fast path - use captured graph if available</span>
+        <span class="hljs-keyword">if</span> (x.is_cuda <span class="hljs-keyword">and</span>
+            self.graph_ready <span class="hljs-keyword">and</span>
+            x.shape == self.input_shape):
+
+            <span class="hljs-comment"># 🟠 STATIC TENSOR REUSE: Copy to pre-allocated tensor with non-blocking transfer</span>
+            self.static_input.copy_(x, non_blocking=<span class="hljs-literal">True</span>)
+
+            <span class="hljs-comment"># 🔵 CUDA GRAPHS: Replay the captured graph</span>
+            self.graph.replay()
+
+            <span class="hljs-comment"># Return the output from static buffer</span>
+            <span class="hljs-keyword">return</span> self.static_output.clone()
+
+        <span class="hljs-comment"># Standard execution path</span>
+        <span class="hljs-keyword">with</span> torch.no_grad():
+            result = self._standard_forward(x)
+
+            <span class="hljs-comment"># 🔵 CUDA GRAPHS: Initialize graph on first CUDA input</span>
+            <span class="hljs-keyword">if</span> x.is_cuda <span class="hljs-keyword">and</span> self.is_cuda_available <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> self.graph_ready:
+                <span class="hljs-keyword">try</span>:
+                    <span class="hljs-comment"># Store the current input shape</span>
+                    self.input_shape = x.shape
+
+                    <span class="hljs-comment"># 🔵 CUDA GRAPHS: Initialize CUDA resources</span>
+                    self._initialize_cuda_resources()
+
+                    <span class="hljs-comment"># 🔵 CUDA GRAPHS + 🟠 STATIC TENSOR REUSE: Capture the graph</span>
+                    self._capture_graph(x, result)
+
+                <span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:
+                    <span class="hljs-comment"># If graph capture fails, continue without it</span>
+                    self.graph_ready = <span class="hljs-literal">False</span>
+
+            <span class="hljs-keyword">return</span> result
+
+            <span class="hljs-comment"># Hyperparameters from the reference implementation</span>
+            batch_size = <span class="hljs-number">10</span>
+            sequence_length = <span class="hljs-number">512</span>
+            input_size = <span class="hljs-number">128</span>
+            hidden_size = <span class="hljs-number">256</span>
+            num_layers = <span class="hljs-number">6</span>
+            output_size = <span class="hljs-number">10</span>
+            dropout = <span class="hljs-number">0.0</span></code></pre>
+                </div>
+              </div>
+            </div>
+
+            <p>
+              The optimized implementation uses color-coded emojis to highlight the three optimization techniques:
+              <span style="color: #007bff;">🔵 CUDA Graphs</span>,
+              <span style="color: #28a745;">🟢 Memory Contiguity</span>, and
+              <span style="color: #fd7e14;">🟠 Static Tensor Reuse</span>.
+              The results reveal something: CUDA Graphs is essential for any meaningful speedup. Without it, no combination of other optimizations provides any benefit. But once CUDA Graphs is enabled, the additional optimizations provide incremental improvements, with all three together achieving the best 3.42× speedup.
+            </p>
+
+          <h4 class="title is-5 subsection-title">Case 3: 3D Convolution Pipeline - 120× Faster</h4>
+<p>
+  The most impressive speedup came from a 3D operation pipeline: transposed convolution, average pooling, clamping, softmax, and element-wise multiplication. CUDA-L1 applied four optimizations:
+</p>
+<ol>
+  <li><strong>Mathematical Short-Circuit:</strong> Detects when min_value equals 0.0 and skips the entire computation</li>
+  <li><strong>Pre-allocated Tensors:</strong> Creates zero tensors during initialization</li>
+  <li><strong>Direct Shape Matching:</strong> Provides a fast path for standard input shapes</li>
+  <li><strong>Pre-computed Parameters:</strong> Stores convolution parameters during initialization</li>
+</ol>
+
+<!-- Code comparison for Conv3D -->
+<div class="code-comparison">
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-language">Python - Reference Implementation</span>
+      <button class="copy-button" onclick="copyCode(this)">Copy</button>
+    </div>
+    <div class="code-content">
+      <pre><code><span class="hljs-keyword">import</span> torch
+<span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn
+
+<span class="hljs-keyword">class</span> <span class="hljs-class">Model</span>(nn.Module):
+    <span class="hljs-string">"""
+    Model that performs a 3D convolution, applies Group Normalization, minimum, clamp, and dropout.
+    """</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-function">__init__</span>(<span class="hljs-params">self, in_channels, out_channels, kernel_size, groups, min_value, max_value, dropout_p</span>):
+        <span class="hljs-keyword">super</span>(Model, self).__init__()
+        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size)
+        self.norm = nn.GroupNorm(groups, out_channels)
+        self.dropout = nn.Dropout(dropout_p)
+        self.min_value = min_value
+        self.max_value = max_value
+
+    <span class="hljs-keyword">def</span> <span class="hljs-function">forward</span>(<span class="hljs-params">self, x</span>):
+        x = self.conv(x)
+        x = self.norm(x)
+        x = torch.min(x, torch.tensor(self.min_value))
+        x = torch.clamp(x, min=self.min_value, max=self.max_value)
+        x = self.dropout(x)
+        <span class="hljs-keyword">return</span> x
+
+<span class="hljs-comment"># Hyperparameters</span>
+batch_size = <span class="hljs-number">128</span>
+in_channels = <span class="hljs-number">3</span>
+out_channels = <span class="hljs-number">16</span>
+depth, height, width = <span class="hljs-number">16</span>, <span class="hljs-number">32</span>, <span class="hljs-number">32</span>
+kernel_size = <span class="hljs-number">3</span>
+groups = <span class="hljs-number">8</span>
+min_value = <span class="hljs-number">0.0</span>
+max_value = <span class="hljs-number">1.0</span>
+dropout_p = <span class="hljs-number">0.2</span>
+
+<span class="hljs-keyword">def</span> <span class="hljs-function">get_inputs</span>():
+    <span class="hljs-keyword">return</span> [torch.randn(batch_size, in_channels, depth, height, width)]
+
+<span class="hljs-keyword">def</span> <span class="hljs-function">get_init_inputs</span>():
+    <span class="hljs-keyword">return</span> [in_channels, out_channels, kernel_size, groups, min_value, max_value, dropout_p]</code></pre>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-language">Python - CUDA-L1 Optimized</span>
+      <button class="copy-button" onclick="copyCode(this)">Copy</button>
+    </div>
+    <div class="performance-badge">120× faster</div>
+    <div class="code-content">
+      <pre><code><span class="hljs-keyword">import</span> torch
+<span class="hljs-keyword">import</span> torch.nn <span class="hljs-keyword">as</span> nn
+
+<span class="hljs-comment"># Hyperparameters</span>
+batch_size = <span class="hljs-number">128</span>
+in_channels = <span class="hljs-number">3</span>
+out_channels = <span class="hljs-number">16</span>
+depth, height, width = <span class="hljs-number">16</span>, <span class="hljs-number">32</span>, <span class="hljs-number">32</span>
+kernel_size = <span class="hljs-number">3</span>
+groups = <span class="hljs-number">8</span>
+min_value = <span class="hljs-number">0.0</span>
+max_value = <span class="hljs-number">1.0</span>
+dropout_p = <span class="hljs-number">0.2</span>
+
+<span class="hljs-keyword">class</span> <span class="hljs-class">ModelNew</span>(nn.Module):
+    <span class="hljs-keyword">def</span> <span class="hljs-function">__init__</span>(<span class="hljs-params">self, in_channels, out_channels, kernel_size, groups, min_value, max_value, dropout_p</span>):
+        <span class="hljs-keyword">super</span>(ModelNew, self).__init__()
+        <span class="hljs-comment"># Store the original layers for parameter compatibility</span>
+        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size)
+        self.norm = nn.GroupNorm(groups, out_channels)
+        self.dropout = nn.Dropout(dropout_p)
+        self.min_value = min_value
+        self.max_value = max_value
+        self.dropout_p = dropout_p
+
+        <span class="hljs-comment"># 🔵 TECH 1: Mathematical Short-Circuit Optimization</span>
+        <span class="hljs-comment"># Detects when min_value=0.0 to skip entire computation</span>
+        self.use_optimized_path = (min_value == <span class="hljs-number">0.0</span>)
+
+        <span class="hljs-comment"># 🟠 TECH 4: Pre-computed Convolution Parameters</span>
+        <span class="hljs-comment"># Extract and store conv parameters once during initialization</span>
+        <span class="hljs-keyword">if</span> isinstance(kernel_size, int):
+            self.kernel_size = (kernel_size, kernel_size, kernel_size)
+        <span class="hljs-keyword">else</span>:
+            self.kernel_size = kernel_size
+        self.stride = self.conv.stride
+        self.padding = self.conv.padding
+        self.dilation = self.conv.dilation
+
+        <span class="hljs-comment"># 🟠 TECH 4: Pre-compute output dimensions for standard input</span>
+        self.out_depth = ((depth + <span class="hljs-number">2</span> * self.padding[<span class="hljs-number">0</span>] - self.dilation[<span class="hljs-number">0</span>] * (self.kernel_size[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>) - <span class="hljs-number">1</span>) // self.stride[<span class="hljs-number">0</span>]) + <span class="hljs-number">1</span>
+        self.out_height = ((height + <span class="hljs-number">2</span> * self.padding[<span class="hljs-number">1</span>] - self.dilation[<span class="hljs-number">1</span>] * (self.kernel_size[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span>) - <span class="hljs-number">1</span>) // self.stride[<span class="hljs-number">1</span>]) + <span class="hljs-number">1</span>
+        self.out_width = ((width + <span class="hljs-number">2</span> * self.padding[<span class="hljs-number">2</span>] - self.dilation[<span class="hljs-number">2</span>] * (self.kernel_size[<span class="hljs-number">2</span>] - <span class="hljs-number">1</span>) - <span class="hljs-number">1</span>) // self.stride[<span class="hljs-number">2</span>]) + <span class="hljs-number">1</span>
+
+        <span class="hljs-comment"># Standard output shape for the default batch size</span>
+        self.standard_shape = (batch_size, out_channels, self.out_depth, self.out_height, self.out_width)
+
+        <span class="hljs-comment"># 🟣 TECH 2: Pre-allocated Zero Tensors</span>
+        <span class="hljs-comment"># Create zero tensors once to avoid allocation overhead</span>
+        <span class="hljs-keyword">if</span> self.use_optimized_path:
+            self.register_buffer(<span class="hljs-string">'zero_output_float32'</span>,
+                               torch.zeros(self.standard_shape, dtype=torch.float32),
+                               persistent=<span class="hljs-literal">False</span>)
+            self.register_buffer(<span class="hljs-string">'zero_output_float16'</span>,
+                               torch.zeros(self.standard_shape, dtype=torch.float16),
+                               persistent=<span class="hljs-literal">False</span>)
+            self.register_buffer(<span class="hljs-string">'zero_output_bfloat16'</span>,
+                               torch.zeros(self.standard_shape, dtype=torch.bfloat16),
+                               persistent=<span class="hljs-literal">False</span>)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-function">calculate_output_shape</span>(<span class="hljs-params">self, input_shape</span>):
+        <span class="hljs-string">"""Calculate the output shape of the convolution operation."""</span>
+        batch_size, _, d, h, w = input_shape
+
+        <span class="hljs-comment"># 🟠 TECH 4: Use precomputed parameters</span>
+        <span class="hljs-comment"># Avoid repeated attribute lookups</span>
+        out_d = ((d + <span class="hljs-number">2</span> * self.padding[<span class="hljs-number">0</span>] - self.dilation[<span class="hljs-number">0</span>] * (self.kernel_size[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>) - <span class="hljs-number">1</span>) // self.stride[<span class="hljs-number">0</span>]) + <span class="hljs-number">1</span>
+        out_h = ((h + <span class="hljs-number">2</span> * self.padding[<span class="hljs-number">1</span>] - self.dilation[<span class="hljs-number">1</span>] * (self.kernel_size[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span>) - <span class="hljs-number">1</span>) // self.stride[<span class="hljs-number">1</span>]) + <span class="hljs-number">1</span>
+        out_w = ((w + <span class="hljs-number">2</span> * self.padding[<span class="hljs-number">2</span>] - self.dilation[<span class="hljs-number">2</span>] * (self.kernel_size[<span class="hljs-number">2</span>] - <span class="hljs-number">1</span>) - <span class="hljs-number">1</span>) // self.stride[<span class="hljs-number">2</span>]) + <span class="hljs-number">1</span>
+
+        <span class="hljs-keyword">return</span> (batch_size, self.conv.out_channels, out_d, out_h, out_w)
+
+    <span class="hljs-keyword">def</span> <span class="hljs-function">forward</span>(<span class="hljs-params">self, x</span>):
+        <span class="hljs-comment"># 🔵 TECH 1: Mathematical Short-Circuit - Main optimization</span>
+        <span class="hljs-comment"># Skip all computation when we know result will be zeros</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> self.use_optimized_path:
+            <span class="hljs-comment"># Standard path for non-optimized cases</span>
+            x = self.conv(x)
+            x = self.norm(x)
+            x = torch.minimum(x, torch.tensor(self.min_value, device=x.device))
+            x = torch.clamp(x, min=self.min_value, max=self.max_value)
+            x = self.dropout(x)
+            <span class="hljs-keyword">return</span> x
+
+        <span class="hljs-comment"># Optimized path when min_value == 0.0</span>
+        <span class="hljs-comment"># Since min(x, 0) followed by clamp(0, 1) always produces zeros</span>
+
+        <span class="hljs-comment"># 🟢 TECH 3: Direct Shape Matching</span>
+        <span class="hljs-comment"># Fast path for standard input dimensions</span>
+        <span class="hljs-keyword">if</span> x.shape == (batch_size, in_channels, depth, height, width):
+            <span class="hljs-comment"># 🟣 TECH 2: Use pre-allocated tensors</span>
+            <span class="hljs-comment"># Return pre-allocated zeros matching input dtype</span>
+            <span class="hljs-keyword">if</span> x.dtype == torch.float32:
+                <span class="hljs-keyword">return</span> self.zero_output_float32
+            <span class="hljs-keyword">elif</span> x.dtype == torch.float16:
+                <span class="hljs-keyword">return</span> self.zero_output_float16
+            <span class="hljs-keyword">elif</span> x.dtype == torch.bfloat16:
+                <span class="hljs-keyword">return</span> self.zero_output_bfloat16
+            <span class="hljs-keyword">else</span>:
+                <span class="hljs-comment"># Fallback for other dtypes</span>
+                <span class="hljs-keyword">return</span> torch.zeros(self.standard_shape, device=x.device, dtype=x.dtype)
+        <span class="hljs-keyword">else</span>:
+            <span class="hljs-comment"># For non-standard input shapes, calculate output shape</span>
+            output_shape = self.calculate_output_shape(x.shape)
+            <span class="hljs-keyword">return</span> torch.zeros(output_shape, device=x.device, dtype=x.dtype)
+
+<span class="hljs-comment"># Color Legend:</span>
+<span class="hljs-comment"># 🔵 TECH 1: Mathematical Short-Circuit (Blue) - Skips computation when min_value=0</span>
+<span class="hljs-comment"># 🟣 TECH 2: Pre-allocated Tensors (Purple) - Pre-allocates zero tensors</span>
+<span class="hljs-comment"># 🟢 TECH 3: Direct Shape Matching (Green) - Fast path for standard shapes</span>
+<span class="hljs-comment"># 🟠 TECH 4: Pre-computed Parameters (Orange) - Pre-computes conv parameters</span></code></pre>
+    </div>
+  </div>
+</div>
+
+<p>
+  The optimized implementation uses color-coded emojis to highlight the four optimization techniques:
+  <span style="color: #007bff;">🔵 Mathematical Short-Circuit</span>,
+  <span style="color: #9b59b6;">🟣 Pre-allocated Tensors</span>,
+  <span style="color: #28a745;">🟢 Direct Shape Matching</span>, and
+  <span style="color: #fd7e14;">🟠 Pre-computed Parameters</span>.
+</p>
+
+        <div class="content has-text-left">
+          <p>
+            These case studies reveal the true power of CUDA-L1: it doesn't just apply known optimization tricks, it discovers fundamental mathematical and computational insights that lead to performance improvements. Through reinforcement learning, it explores the vast space of possible implementations and learns principles that even experienced CUDA programmers might miss.
+          </p>
+        </div>
+
+      </div>
+    </div>
+    <!--/ Case Study -->
+  </div>
   </section>
 
   <section class="section" id="BibTeX">
