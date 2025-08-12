@@ -288,7 +288,7 @@ function copyCode(button) {
 
         <div class="container has-text-centered" style="margin-bottom: 0rem;">
 
-          <h1 class="title is-1 publication-title gradient-title" style="margin-top: -1rem;">
+          <h1 class="title is-1 publication-title gradient-title" style="margin-top: -2rem;">
             CUDA-L1: Improving CUDA Optimization via Contrastive Reinforcement Learning
           </h1>
 
@@ -333,10 +333,10 @@ function copyCode(button) {
               </span>
 
               <!-- Speedup Image -->
-            <div class="figure-container" style="padding-top: 0rem; margin-top: 2rem; margin-bottom: 0rem;">
-              <img src="assets/speedup_and_demo.png" alt="CUDA-L1 Speedup Results" style="transform: scale(0.7); transform-origin: center top; margin-top: 1rem; margin-bottom: -7rem;">
+            <div class="figure-container" style="padding-top: 0rem; margin-top: 0rem; margin-bottom: 0rem;">
+              <img src="assets/gpu_config_comparison.png" alt="CUDA-L1 Speedup Results" style="transform: scale(0.85); transform-origin: center top; margin-top: 1rem; margin-bottom: -5rem;">
               <div class="subcaptions" style="text-align: center; margin-top: 0px; margin-bottom: -2rem; line-height: 1.4;">
-              <p style="margin: 0 0 0px 0;"><small>Fig (left) Average speedup across different architectures on KernelBench; Fig (right) A showcase of <code>diag(A) * B</code> reference and CUDA-L1 implementations. The optimized implementation reduces complexity from O(N²M) to O(NM), achieving <strong>64×</strong> speedup by replacing full matrix multiplication with element-wise operations.</small></p>
+              <p style="margin: 0 0 0px 0;"><small>Average speedup across different optimization configurations on 5 types of GPU architectures.</small></p>
             </div>
             </div>
             </div>
@@ -591,100 +591,118 @@ torch.cuda.<span class="hljs-function">synchronize</span>(device=device)</code><
   <section class="section">
     <div class="container is-max-desktop">
 
-      <!-- Results -->
+       <!-- Results -->
       <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
-          <h2 class="title is-3">Results</h2>
+          <h2 class="title is-3">Evaluations</h2>
 
           <div class="content has-text-left">
-            <h4 class="title is-5 subsection-title">Does It Actually Work?</h4>
             <p>
               We tested CUDA-L1 on KernelBench, a comprehensive benchmark suite with three difficulty levels:
             </p>
             <ul>
-              <li>Level 1: Simple operations (like matrix multiply)</li>
-              <li>Level 2: Operator sequences (like attention mechanisms)</li>
-              <li>Level 3: Complex ML tasks (like full transformer layers)</li>
+              <li><strong>Level 1:</strong> A subset that contains simple operations (like matrix multiply)</li>
+              <li><strong>Level 2:</strong> A subset that contains operator sequences (like attention mechanisms)</li>
+              <li><strong>Level 3:</strong> A subset that contains complex ML tasks (like full transformer layers)</li>
             </ul>
+            <p>
+              And we use <strong>All Levels</strong> to denote the full dataset containing all three levels.
+            </p>
+
+            <p>
+              To perform a comprehensive evaluation on the generated code, we perform the following comparisons:
+            </p>
+
+            <p>
+              <strong>I) Default</strong>: This compares the CUDA-L1 generated code with the reference code by KernelBench.
+            </p>
+
+            <p>
+              <strong>II) Torch Compile</strong>: This compares the CUDA-L1 generated code with the reference code enhanced by torch.compile with default settings. Torch.compile applies graph-level optimizations including operator fusion, memory planning, and kernel selection to accelerate PyTorch models through just-in-time compilation.
+            </p>
+
+            <p>
+              <strong>III) Torch Compile Reduce Overhead</strong>: This compares the CUDA-L1 generated code with the reference code enhanced by torch.compile with reduce-overhead mode enabled. This mode minimizes the compilation overhead by caching compiled graphs more aggressively and reducing recompilation frequency, making it particularly suitable for inference workloads with static shapes.
+            </p>
+
+            <p>
+              <strong>IV) CUDA Graph</strong>: Since KernelBench does not provide official CUDA Graph implementations, we employ Claude 4 to generate CUDA Graph-augmented code for each reference implementation. CUDA Graphs capture a series of CUDA kernels and their dependencies into a single graph structure that can be launched with minimal CPU overhead, eliminating the need for repeated kernel launch commands and significantly reducing CPU-GPU synchronization costs.
+            </p>
           </div>
 
           <div class="table-container">
             <table class="table is-striped is-fullwidth">
-              <caption>Performance of CUDA-L1 on KernelBench</caption>
+              <caption><strong>Performance comparison across different configurations on KernelBench on A100</strong></caption>
               <thead>
                 <tr>
-                  <th>Method</th>
+                  <th>Configuration</th>
+                  <th>DataType</th>
                   <th>Mean</th>
                   <th>Max</th>
                   <th>75%</th>
                   <th>50%</th>
                   <th>25%</th>
-                  <th>Success<br><small># out of total</small></th>
-                  <th>Speedup<br><small># out of total</small></th>
+                  <th>Success↑<br><small># out of total</small></th>
+                  <th>Speedup↑<br><small>>1.01x out of total</small></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td><strong>All</strong></td>
+                  <td><em>Default</em></td>
+                  <td><strong>All Levels</strong></td>
                   <td><strong>3.12×</strong></td>
                   <td><strong>120×</strong></td>
                   <td>2.25×</td>
                   <td>1.42×</td>
                   <td>1.17×</td>
                   <td>249/250</td>
-                  <td>240/250</td>
+                  <td>226/250</td>
                 </tr>
                 <tr>
-                  <td>Level 1</td>
-                  <td>2.78×</td>
-                  <td>65.8×</td>
-                  <td>1.75×</td>
-                  <td>1.28×</td>
-                  <td>1.12×</td>
-                  <td>99/100</td>
-                  <td>94/100</td>
+                  <td><em>Torch Compile</em></td>
+                  <td><strong>All Levels</strong></td>
+                  <td>2.77×</td>
+                  <td>69.0×</td>
+                  <td>2.55×</td>
+                  <td>1.72×</td>
+                  <td>1.14×</td>
+                  <td>249/250</td>
+                  <td>203/250</td>
                 </tr>
                 <tr>
-                  <td>Level 2</td>
-                  <td>3.55×</td>
-                  <td>120×</td>
-                  <td>2.05×</td>
-                  <td>1.39×</td>
+                  <td><em>Torch Compile RO</em></td>
+                  <td><strong>All Levels</strong></td>
+                  <td>2.88×</td>
+                  <td>80.1×</td>
+                  <td>2.48×</td>
+                  <td>1.67×</td>
+                  <td>1.13×</td>
+                  <td>249/250</td>
+                  <td>200/250</td>
+                </tr>
+                <tr>
+                  <td><em>CUDA Graph</em></td>
+                  <td><strong>All Levels</strong></td>
+                  <td>2.81×</td>
+                  <td>97.9×</td>
+                  <td>1.83×</td>
                   <td>1.20×</td>
-                  <td>100/100</td>
-                  <td>98/100</td>
-                </tr>
-                <tr>
-                  <td>Level 3</td>
-                  <td>2.96×</td>
-                  <td>24.9×</td>
-                  <td>2.60×</td>
-                  <td>1.94×</td>
-                  <td>1.42×</td>
-                  <td>50/50</td>
-                  <td>48/50</td>
+                  <td>0.954×</td>
+                  <td>249/250</td>
+                  <td>147/229</td>
                 </tr>
               </tbody>
             </table>
+            <div class="content has-text-left has-text-grey is-size-7">
+              <p>
+                • RO = Reduce Overhead<br>
+                • Success and Speedup indicate the number of successful benchmarks out of the total for each level
+              </p>
+            </div>
           </div>
 
           <div class="content has-text-left">
-            <p>
-              The results? Mind-blowing. CUDA-L1 achieved an average 17.7× speedup across all tasks, with some kernels running up to 449× faster than the baseline PyTorch implementations.
-            </p>
-            <p>
-              Here's where it gets really interesting: the harder the task, the better CUDA-L1 performs:
-            </p>
-            <ul>
-              <li>Level 1: 12.3× average speedup</li>
-              <li>Level 2: 6.4× average speedup</li>
-              <li>Level 3: 50.8× average speedup</li>
-            </ul>
-            <p>
-              This pattern makes perfect sense - complex ML operations have more room for optimization, and CUDA-L1 excels at finding these opportunities. This is especially exciting for real-world applications like LLM inference, where complex operations dominate the workload.
-            </p>
-
-            <h4 class="title is-5 subsection-title">But Does It Work on Your GPU?</h4>
+            <h4 class="title is-5 subsection-title">Generalization of A100-Optimized Kernels to Other GPU Architectures</h4>
             <p>
               We trained CUDA-L1 on NVIDIA A100s, but what if you're using a different GPU? Good news: the optimizations transfer remarkably well. We tested the same A100-optimized kernels on:
             </p>
@@ -692,83 +710,66 @@ torch.cuda.<span class="hljs-function">synchronize</span>(device=device)</code><
 
           <div class="table-container">
             <table class="table is-striped is-fullwidth">
-              <caption>CUDA-L1 overall performance on KernelBench across different GPU devices</caption>
+              <caption><strong>Mean speedup across different configurations and GPU devices</strong></caption>
               <thead>
                 <tr>
-                  <th>GPU Device</th>
-                  <th>Mean</th>
-                  <th>Max</th>
-                  <th>75%</th>
-                  <th>50%</th>
-                  <th>25%</th>
-                  <th>Success<br><small># out of 250</small></th>
-                  <th>Speedup<br><small># out of 250</small></th>
+                  <th>Configuration</th>
+                  <th>A100</th>
+                  <th>3090</th>
+                  <th>H100</th>
+                  <th>H20</th>
+                  <th>L40</th>
                 </tr>
               </thead>
               <tbody>
-              <tr>
-                  <td>A100 PCIe</td>
+                <tr>
+                  <td><em>Default</em></td>
                   <td><strong>3.12×</strong></td>
-                  <td>120×</td>
-                  <td><strong>2.25×</strong></td>
-                  <td><strong>1.42×</strong></td>
-                  <td><strong>1.17×</strong></td>
-                  <td><strong>249</strong></td>
-                  <td><strong>240</strong></td>
-              </tr>
-              <tr>
-                  <td>H100</td>
-                  <td>2.39×</td>
-                  <td>81.9×</td>
-                  <td>1.76×</td>
-                  <td>1.32×</td>
-                  <td>1.09×</td>
-                  <td><strong>250</strong></td>
-                  <td>227</td>
-              </tr>
-              <tr>
-                  <td>L40</td>
-                  <td><strong>3.12×</strong></td>
-                  <td><strong>182×</strong></td>
-                  <td>1.89×</td>
-                  <td>1.31×</td>
-                  <td>1.08×</td>
-                  <td>248</td>
-                  <td>228</td>
-              </tr>
-              <tr>
-                  <td>RTX 3090</td>
-                  <td>2.50×</td>
-                  <td>114×</td>
-                  <td>1.57×</td>
-                  <td>1.18×</td>
-                  <td>1.03×</td>
-                  <td>242</td>
-                  <td>213</td>
-              </tr>
-              <tr>
-                  <td>H20</td>
-                  <td>2.37×</td>
-                  <td>63.7×</td>
-                  <td>1.81×</td>
-                  <td>1.34×</td>
-                  <td>1.11×</td>
-                  <td>247</td>
-                  <td>233</td>
-              </tr>
-          </tbody>
+                  <td>2.51×</td>
+                  <td><strong>3.85×</strong></td>
+                  <td>2.38×</td>
+                  <td>3.13×</td>
+                </tr>
+                <tr>
+                  <td><em>Torch Compile</em></td>
+                  <td>2.77×</td>
+                  <td>2.58×</td>
+                  <td>2.74×</td>
+                  <td><strong>2.89×</strong></td>
+                  <td>2.85×</td>
+                </tr>
+                <tr>
+                  <td><em>Torch Compile RO</em></td>
+                  <td>2.88×</td>
+                  <td>2.61×</td>
+                  <td>2.77×</td>
+                  <td>2.82×</td>
+                  <td><strong>2.89×</strong></td>
+                </tr>
+                <tr>
+                  <td><em>CUDA Graph</em></td>
+                  <td>2.81×</td>
+                  <td><strong>3.34×</strong></td>
+                  <td>2.23×</td>
+                  <td>2.20×</td>
+                  <td><strong>3.98×</strong></td>
+                </tr>
+              </tbody>
             </table>
           </div>
 
           <div class="content has-text-left">
             <p>
-              That's right - without any special tuning for these GPUs, CUDA-L1's optimizations work across the board. Consumer GPUs like the RTX series even show more consistent gains than the datacenter GPUs. This suggests that the optimization patterns CUDA-L1 learns are fundamental enough to benefit any modern GPU architecture.
+              The results show fascinating patterns across different GPU architectures:
             </p>
+            <ul>
+              <li><strong>H100 excels with default CUDA-L1 optimizations (3.85×)</strong>, showing that our base optimizations work particularly well on the latest datacenter GPUs.</li>
+              <li><strong>Consumer GPUs (RTX 3090) benefit more from CUDA Graphs (3.34×)</strong>, likely due to their different memory hierarchies and lower CPU-GPU communication overhead.</li>
+              <li><strong>Kernels working on L40 shows exceptional performance with CUDA Graphs (3.98×)</strong>, the highest speedup we observed across all configurations.</li>
+              <li><strong>Optimized kernels show consistent performance across all GPUs</strong>, ranging from 2.20× to 3.89×, demonstrating strong generalization capability.</li>
+            </ul>
             <p>
-              Could we do even better with GPU-specific training? Absolutely. We're planning to release specialized versions of CUDA-L1 for different GPU architectures in future updates.
-            </p>
-            <p>
-              The future of GPU programming might involve less manual optimization and more collaboration with AI that truly understands what makes kernels fast. And unlike traditional approaches, CUDA-L1 keeps getting better with each training iteration, continuously discovering new optimization patterns.
+              These results confirm that CUDA-L1's optimization patterns are fundamental enough to benefit any modern GPU architecture, though different GPUs may favor different optimization strategies. This suggests exciting opportunities for GPU-specific training in future versions of CUDA-L1.
             </p>
           </div>
 
@@ -1283,6 +1284,26 @@ dropout_p = <span class="hljs-number">0.2</span>
     </div>
     <!--/ Case Study -->
   </div>
+  </section>
+
+   <section class="section">
+    <div class="container is-max-desktop">
+
+      <!-- Limitations and Challenges -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Limitations and Challenges</h2>
+
+          <div class="content has-text-left">
+            <p>
+              During the training process, we found that RL is particularly susceptible to reward hacking. We've already identified quite some hacking cases (e.g., exploiting timing measurements & caching results). If you identify any additional reward hacks in the code, we would greatly appreciate you letting us know. You can contact us via email at `research@deep-reinforce.com` or open a GitHub issue at https://github.com/deepreinforce-ai/CUDA-L1
+            </p>
+          </div>
+
+        </div>
+      </div>
+      <!--/ Limitations and Challenges -->
+    </div>
   </section>
 
   <section class="section" id="BibTeX">
