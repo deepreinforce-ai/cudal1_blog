@@ -529,30 +529,30 @@ torch.cuda.<span class="hljs-function">synchronize</span>(device=device)</code><
               Another critical vulnerability discovered by community users on GitHub involves lazy evaluation. When calling custom_model(*inputs), the output isn't necessarily materialized or computed immediately. Instead, the actual computation can be deferred until the correctness check phase when torch.allclose() is invoked, allowing submissions to pass correctness checks while avoiding proper timing measurement.
             </p>
 
-            <div class="code-block">
-              <div class="code-header">
-                <span class="code-language">Python - Lazy Evaluation Exploit</span>
-                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-              </div>
-              <div class="code-content">
-                <pre><code>
-                <span class="hljs-keyword">class</span> LazyMatmul(torch.Tensor):
-                  def __new__(cls, A, B):
-                    result = torch.Tensor._make_subclass(cls, torch.empty(<span class="hljs-number">0</span>))
-                    result.A = A
-                    result.B = B
-                    result._shape = (A.size(<span class="hljs-number">0</span>), B.size(<span class="hljs-number">1</span>))
-                    return result
+          <div class="code-block">
+  <div class="code-header">
+    <span class="code-language">Python - Lazy Evaluation Exploit</span>
+    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+  </div>
+  <div class="code-content">
+    <pre><code><span class="hljs-keyword">class</span> LazyMatmul(torch.Tensor):
+    <span class="hljs-keyword">def</span> __new__(cls, A, B):
+        result = torch.Tensor.<span class="hljs-function">_make_subclass</span>(cls, torch.<span class="hljs-function">empty</span>(<span class="hljs-number">0</span>))
+        result.A = A
+        result.B = B
+        result._shape = (A.<span class="hljs-function">size</span>(<span class="hljs-number">0</span>), B.<span class="hljs-function">size</span>(<span class="hljs-number">1</span>))
+        <span class="hljs-keyword">return</span> result
 
-                  def materialize(self):
-                    """Trigger actual computation"""
-                    return torch.matmul(self.A, self.B)
+    <span class="hljs-keyword">def</span> materialize(self):
+        <span class="hljs-comment">"""Trigger actual computation"""</span>
+        <span class="hljs-keyword">return</span> torch.<span class="hljs-function">matmul</span>(self.A, self.B)
 
-                <span class="hljs-keyword">class</span> ModelNew(nn.Module):
-                    <span class="hljs-keyword">def</span> forward(<span class="hljs-keyword">self</span>, A, B):
-                        <span class="hljs-keyword">return</span> LazyMatmul(A, B)  <span class="hljs-comment"># Returns lazy object</span></code></pre>
-                  </div>
-            </div>
+<span class="hljs-keyword">class</span> ModelNew(nn.Module):
+    <span class="hljs-keyword">def</span> forward(self, A, B):
+        <span class="hljs-keyword">return</span> <span class="hljs-function">LazyMatmul</span>(A, B)  <span class="hljs-comment"># Returns lazy object</span></code></pre>
+  </div>
+</div>
+
 
             <div class="warning-box" style="background-color: #fff3cd;">
               <p><strong>Warning:</strong> This exploit returns a lazy tensor subclass that defers all computation until the correctness check, completely bypassing the timing measurement!</p>
@@ -562,36 +562,35 @@ torch.cuda.<span class="hljs-function">synchronize</span>(device=device)</code><
               To mitigate this issue, we enforce a comprehensive validation check that ensures all outputs are fully materialized before ending the time measurement. This involves verifying five critical conditions: the output must be a tensor, must be a standard torch.Tensor (not a subclass), must be on the correct device, must have allocated memory, and the corresponding storage must be valid.
             </p>
 
-            <div class="code-block">
-              <div class="code-header">
-                <span class="code-language">Python - Materialization Validation</span>
-                <button class="copy-button" onclick="copyCode(this)">Copy</button>
-              </div>
-              <div class="code-content">
-                <pre><code>
-            <span class="hljs-comment"># Check 1: Must be a tensor</span>
-            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isinstance(out, torch.Tensor):
-                <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>, <span class="hljs-string">f&quot;{prefix} is not a tensor: {type(out)}&quot;</span>
+          <div class="code-block">
+  <div class="code-header">
+    <span class="code-language">Python - Materialization Validation</span>
+    <button class="copy-button" onclick="copyCode(this)">Copy</button>
+  </div>
+  <div class="code-content">
+    <pre><code><span class="hljs-comment"># Check 1: Must be a tensor</span>
+<span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-function">isinstance</span>(out, torch.Tensor):
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>, <span class="hljs-string">f"{prefix} is not a tensor: {type(out)}"</span>
 
-            <span class="hljs-comment"># Check 2: Must be standard torch.Tensor, not a subclass</span>
-            <span class="hljs-keyword">if</span> type(out).__name__ <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> [<span class="hljs-string">'Tensor'</span>, <span class="hljs-string">'Parameter'</span>]:
-                <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>, <span class="hljs-string">f&quot;{prefix} is {type(out).__name__}, not standard torch.Tensor&quot;</span>
+<span class="hljs-comment"># Check 2: Must be standard torch.Tensor, not a subclass</span>
+<span class="hljs-keyword">if</span> type(out).__name__ <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> [<span class="hljs-string">'Tensor'</span>, <span class="hljs-string">'Parameter'</span>]:
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>, <span class="hljs-string">f"{prefix} is {type(out).__name__}, not standard torch.Tensor"</span>
 
-            <span class="hljs-comment"># Check 3: Must be on correct device</span>
-            <span class="hljs-keyword">if</span> out.device != device:
-                <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>, <span class="hljs-string">f&quot;{prefix} on wrong device: {out.device} (expected {device})&quot;</span>
+<span class="hljs-comment"># Check 3: Must be on correct device</span>
+<span class="hljs-keyword">if</span> out.device != device:
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>, <span class="hljs-string">f"{prefix} on wrong device: {out.device} (expected {device})"</span>
 
-            <span class="hljs-comment"># Check 4: Must have allocated storage</span>
-            storage_size = out.untyped_storage().size()
-            <span class="hljs-keyword">if</span> storage_size == <span class="hljs-number">0</span>:
-                <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>, <span class="hljs-string">f&quot;{prefix} has no allocated storage (likely lazy)&quot;</span>
+<span class="hljs-comment"># Check 4: Must have allocated storage</span>
+storage_size = out.<span class="hljs-function">untyped_storage</span>().<span class="hljs-function">size</span>()
+<span class="hljs-keyword">if</span> storage_size == <span class="hljs-number">0</span>:
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>, <span class="hljs-string">f"{prefix} has no allocated storage (likely lazy)"</span>
 
-            <span class="hljs-comment"># Check 5: Storage pointer must be valid</span>
-            ptr = out.data_ptr()
-            <span class="hljs-keyword">if</span> ptr == <span class="hljs-number">0</span>:
-                <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>, <span class="hljs-string">f&quot;{prefix} storage pointer is null (likely lazy)&quot;</span></code></pre>
-              </div>
-            </div>
+<span class="hljs-comment"># Check 5: Storage pointer must be valid</span>
+ptr = out.<span class="hljs-function">data_ptr</span>()
+<span class="hljs-keyword">if</span> ptr == <span class="hljs-number">0</span>:
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>, <span class="hljs-string">f"{prefix} storage pointer is null (likely lazy)"</span></code></pre>
+  </div>
+</div>
 
 
           <h5>3. Hyperparameter Manipulation</h5>
